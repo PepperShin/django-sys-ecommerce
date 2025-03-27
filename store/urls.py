@@ -1,8 +1,8 @@
 from django.contrib import admin
 from django.urls import path, include
+from . import views
 
-
+# dev_1
 urlpatterns = [
-    path("admin/", admin.site.urls),
-    path("", include("store.urls")), #dev_1
+    path("", views.home, name="home"),
 ]

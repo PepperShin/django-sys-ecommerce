@@ -11,5 +11,11 @@
         "editor.formatOnSave": true,
         "editor.defaultFormatter": "monosans.djlint"
     },
-    "djlint.ignore": ["T002", "T032", "T001", "D018", "H030", "H031"]
+    "djlint.ignore": ["T002", "T032", "T001", "D018", "H030", "H031"],
+    // "python.analysis.packageIndexDepths": [
+    //     [
+    //         "",
+    //         2
+    //     ]
+    // ],
 }
