@@ -7,15 +7,17 @@
         "editor.defaultFormatter": "ms-python.black-formatter",
         "editor.formatOnSave": true
     },
+    "files.associations": {
+        "**/*.html": "html",
+        "**/templates/**/*.html": "django-html",
+        "**/templates/**/*": "django-txt",
+        "**/requirements{/**,*}.{txt,in}": "pip-requirements"
+    },
+    "emmet.includeLanguages": {
+        "django-html": "html"
+    },
     "[html][django-html][handlebars][hbs][mustache][jinja][jinja-html][nj][njk][nunjucks][twig]": {
-        "editor.formatOnSave": true,
         "editor.defaultFormatter": "monosans.djlint"
     },
-    "djlint.ignore": ["T002", "T032", "T001", "D018", "H030", "H031"],
-    // "python.analysis.packageIndexDepths": [
-    //     [
-    //         "",
-    //         2
-    //     ]
-    // ],
+    "djlint.ignore": ["T032", "T001", "D018", "H006", "H031"]
 }
