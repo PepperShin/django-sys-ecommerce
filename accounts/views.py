@@ -32,5 +32,5 @@ def login_user(request):
 
 
 def logout_user(request):
-    logout(request)
+    logout(request)  # session에 저장된 sessionid 삭제
     return redirect("/")
