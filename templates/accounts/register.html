@@ -1,0 +1,25 @@
+<!-- dev_10 -->
+{% extends "layout/base.html" %}
+{% load humanize %}
+{% block head %}
+    {% include "layout/head.html" %}
+{% endblock head %}
+{% block navi %}
+    {% include "layout/navbar.html" %}
+{% endblock navi %}
+{% block header %}
+<header class="bg-dark py-5">
+    <div class="container px-4 px-lg-5 my-5">
+        <div class="text-center text-white">
+            <h1 class="display-4 fw-bolder">회원가입</h1>
+            <p class="lead fw-normal text-white-50 mb-0">회원가입 페이지 입니다.</p>
+        </div>
+    </div>
+</header>
+{% endblock header %}
+{% block content %}
+    {{form.as_p }}
+{% endblock content %}
+{% block footer %}
+    {% include "layout/footer.html" %}
+{% endblock footer %}
