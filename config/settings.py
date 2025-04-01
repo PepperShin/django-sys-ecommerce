@@ -39,6 +39,7 @@ INSTALLED_APPS = [
     "django.contrib.staticfiles",
     "store",  # dev_1
     "django.contrib.humanize",  # dev_5
+    "accounts",  # dev_9
 ]
 
 MIDDLEWARE = [
@@ -143,3 +144,7 @@ import os
 # http://127.0.0.1:8000/media/파일경로
 MEDIA_URL = "media/"  # ex) /media/photo1.png
 MEDIA_ROOT = os.path.join(BASE_DIR, "media")
+
+# dev_9
+# 다시 한번 migrate 시켜줘야함
+AUTH_USER_MODEL = "accounts.User"  # 설정하지 않으면 auth.User가 기본으로 할당.
