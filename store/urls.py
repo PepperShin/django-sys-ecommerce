@@ -12,4 +12,7 @@ urlpatterns = [
     path(
         "product/<int:product_id>", views.product, name="product"
     ),  # dev_13 제품 상세 페이지
+    path(
+        "category_summary", views.category_summary, name="category_summary"
+    ),  # dev_14 카테고리
 ]
