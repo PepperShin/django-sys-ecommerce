@@ -9,4 +9,7 @@ app_name = "store"
 urlpatterns = [
     path("", views.home, name="home"),
     path("about", views.about, name="about"),  # dev_8 어바웃 페이지 추가
+    path(
+        "product/<int:product_id>", views.product, name="product"
+    ),  # dev_13 제품 상세 페이지
 ]
