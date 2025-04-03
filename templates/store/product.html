@@ -1,4 +1,4 @@
-<!-- dev_13 -->
+<!--dev_13-->
 {% extends "layout/base.html" %}
 {% load humanize %}
 {% block head %}
@@ -17,14 +17,14 @@
                          alt="...">
                 </div>
                 <div class="col-md-6">
-                    <div class="small mb-1">SKU:{{product.id}}</div>
+                    <div class="small mb-1">SKU: {{ product.id }}</div>
                     <h1 class="display-5 fw-bolder">{{ product.name }}</h1>
                     <div class="fs-5 mb-5">
                         {% if product.is_sale %}
-                            <span class="text-decoration-line-through">{{ product.price | floatformat:0 | intcomma }}원</span>
-                            <span>{{ product.price | floatformat:0 | intcomma }}원</span>
+                            <span class="text-decoration-line-through">{{ product.price|floatformat:0|intcomma }}원</span>
+                            <span>{{ product.price|floatformat:0|intcomma }}원</span>
                         {% else %}
-                            {{ product.price | floatformat:0 | intcomma }}원
+                            {{ product.price|floatformat:0|intcomma }}원
                         {% endif %}
                     </div>
                     <p class="lead">{{ product.description }}</p>
@@ -34,9 +34,14 @@
                                type="num"
                                value="1"
                                style="max-width: 3rem">
-                        <button class="btn btn-outline-dark flex-shrink-0" type="button">
+                        <!--dev_15-->
+                        <button class="btn btn-outline-dark flex-shrink-0"
+                                type="button"
+                                value="{{ product.id }}"
+                                id="add-cart">
                             <i class="bi-cart-fill me-1"></i>
-                            Add to cart
+                            <!--dev_15-->
+                            Add to cart(장바구니 담기)
                         </button>
                     </div>
                     <br>
@@ -49,3 +54,26 @@
 {% block footer %}
     {% include "layout/footer.html" %}
 {% endblock footer %}
+<!--dev_15-->
+{% block script %}
+    <script>
+    $(document).on('click','#add-cart',function(e){
+        $.ajax({
+            type:"post",
+            url:"{% url 'cart:add_cart' %}",
+            data:{
+                product_id:$("#add-cart").val(),
+                product_qty: $("#inputQuantity").val(),
+                csrfmiddlewaretoken:'{{ csrf_token }}', // 장고에서만 사용된다.
+                action:"post"
+            },
+            suceess:function(json){
+                console.log(json)                
+            },
+            error: function(e){
+                console.log(e)
+            }
+        });
+    });
+    </script>
+{% endblock %}

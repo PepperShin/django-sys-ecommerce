@@ -40,6 +40,7 @@ INSTALLED_APPS = [
     "store",  # dev_1
     "django.contrib.humanize",  # dev_5
     "accounts",  # dev_9
+    "cart",  # dev_15
 ]
 
 MIDDLEWARE = [
@@ -148,3 +149,6 @@ MEDIA_ROOT = os.path.join(BASE_DIR, "media")
 # dev_9
 # 다시 한번 migrate 시켜줘야함
 AUTH_USER_MODEL = "accounts.User"  # 설정하지 않으면 auth.User가 기본으로 할당.
+
+# dev_15
+CART_SESSION_ID = "cart"
