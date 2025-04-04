@@ -1,7 +1,7 @@
 {% load static %}
 <nav class="navbar navbar-expand-lg navbar-light bg-light">
     <div class="container px-4 px-lg-5">
-        <a class="navbar-brand" href="{% url 'store:about' %}">쇼핑몰</a>
+        <a class="navbar-brand" href="{% url 'store:home' %}">쇼핑몰</a>
         <button class="navbar-toggler"
                 type="button"
                 data-bs-toggle="collapse"
@@ -61,7 +61,10 @@
                     <i class="bi-cart-fill me-1"></i>
                     Cart
                     <!-- dev_16 -->
-                    <span class="badge bg-dark text-white ms-1 rounded-pill" id="cart_quantity">{{cart|length}}</span>
+                    <span class="badge bg-dark text-white ms-1 rounded-pill" id="cart_quantity">
+                        <!-- dev_17 cart 함수 호출 -->
+                        {{cart|length}}
+                    </span>
                 </button>
             </form>
         </div>

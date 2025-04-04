@@ -32,6 +32,8 @@ def add_cart(request):
         # 카트 전체 개수 가져오기
         cart_qty = cart.__len__()
         response = JsonResponse({"qty": cart_qty})
+
+        # 세션 확인 테스트
         cart.decrypt_all_sessions()
 
         # Get Cart Quantity
