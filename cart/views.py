@@ -38,3 +38,11 @@ def add_cart(request):
 
         # Get Cart Quantity
         return response
+
+
+# dev_18
+def summary_cart(request):
+    # 카트 객체 받아오기
+    cart = Cart(request)
+
+    return render(request, "cart/summary.html", {"cart": cart})

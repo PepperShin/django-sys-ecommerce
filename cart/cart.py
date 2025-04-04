@@ -2,6 +2,10 @@ from django.conf import settings
 from django.contrib.sessions.backends.db import SessionStore
 from django.contrib.sessions.models import Session
 
+# dev_18
+from store.models import Product
+from decimal import Decimal
+
 
 # dev_15
 class Cart:  # 카트 클래스 생성
@@ -27,6 +31,32 @@ class Cart:  # 카트 클래스 생성
     def __len__(self):
         return sum(item["quantity"] for item in self.cart.values())
         # values = {"quantity" : 0, "price":str(product.price)}
+
+    # dev_18 Cart를 for문으로 돌릴 수 있는 이터레이터 객체로 생성
+    def __iter__(self):
+        product_ids = self.cart.keys()  # cart 딕셔너리에서 key인 1, 2...
+
+        # select * from product where id in ("1", "2")
+        products = Product.objects.filter(id__in=product_ids)
+
+        for product in products:
+            self.cart[str(product.id)]["product"] = product
+        # self.cart = {
+        #   "1":{"quantity":7,"price":"3000.00", "product": id가 1번인 상품의 Product 모델 객체}
+        #   "2":{"quantity":1,"price":"5000.00", "product": id가 2번인 상품의 Product 모델 객체}
+        # }
+
+        for item in self.cart.values():
+            item["price"] = Decimal(item["price"])  # from decimal import Decimal
+            item["total_price"] = (
+                item["price"] * item["quantity"]
+            )  # "total_price" : price * quantity
+            # self.cart = {
+            #   "1":{"quantity":7,"price":"3000.00", "product": id가 1번인 상품의 Product 모델 객체, "total_price": 21000}
+            #   "2":{"quantity":1,"price":"5000.00", "product": id가 2번인 상품의 Product 모델 객체, "total_price": 5000}
+            # }
+
+            yield item  # 제너레이터 문법. 이터레이터 넘어가는 단위 지정.
 
     def add(self, product, quantity=1, is_update=False):
         product_id = str(product.id)

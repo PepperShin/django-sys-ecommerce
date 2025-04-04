@@ -56,7 +56,8 @@
                     </ul>
                 </li>
             </ul>
-            <form class="d-flex">
+            <!-- dev_18 -->
+            <a class="d-flex" href="{% url 'cart:summary_cart' %}">
                 <button class="btn btn-outline-dark" type="submit">
                     <i class="bi-cart-fill me-1"></i>
                     Cart
@@ -66,7 +67,7 @@
                         {{cart|length}}
                     </span>
                 </button>
-            </form>
+            </a>
         </div>
     </div>
 </nav>

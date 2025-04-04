@@ -1,0 +1,93 @@
+<!-- dev_18 -->
+{% extends "layout/base.html" %}
+{% load humanize %}
+{% block head %}
+    {% include "layout/head.html" %}
+{% endblock %}
+{% block navi %}
+    {% include "layout/navbar.html" %}
+{% endblock navi %}
+{% block header %}
+    <header class="bg-dark py-5">
+        <div class="container px-4 px-lg-5 my-5">
+            <div class="text-center text-white">
+                <h1 class="display-4 fw-bolder">장바구니</h1>
+                <p class="lead fw-normal text-white-50 mb-0">장바구니 summary</p>
+            </div>
+        </div>
+    </header>
+{% endblock header %}
+{% block content %}
+    <div class="container">
+        {% if cart %}
+            {% for item in cart %}
+                <div class="card mb-3">
+                    <div class="row g-0">
+                        <div class="col-md-4">
+                            <img src=" {{ item.product.image.url }}"
+                                 style="width:100%;
+                                        height:25rem;
+                                        object-fit:fill"
+                                 class="img-fluid rounded-start"
+                                 alt="..." />
+                        </div>
+                        <div class="col-md-8">
+                            <div class="card-body mt-4">
+                                <center>
+                                    <h5 class="card-title">{{ item.product.name }}</h5>
+                                    <p class="card-text">{{ item.product.description }}</p>
+                                    {% if item.product.is_sale %}
+                                        {% comment %} <div class="d-flex justify-content-center small text-warning mb-2">
+                          <div class="bi-star-fill"></div>
+                          <div class="bi-star-fill"></div>
+                          <div class="bi-star-fill"></div>
+                          <div class="bi-star-fill"></div>
+                          <div class="bi-star-fill"></div>
+                        </div>
+                        <!-- Product price-->
+                        <strike>
+                          ${{ product.price }}
+                        </strike>
+                        <br />
+                        ID :&nbsp;{{ product.id }}
+                        <br />
+                                        &nbsp;${{ product.sale_price }} {% endcomment %}
+                                        ${{ item.product.price }}
+                                        <br />
+                                        ID :
+                                        {{ item.product.id }}
+                                    {% else %}
+                                        ${{ item.product.price }}
+                                        <br />
+                                        ID :
+                                        {{ item.product.id }}
+                                    {% endif %}
+                                    <br />
+                                    <br />
+                                    <div class="row justify-content-center">
+                                        <div class="col-md-2">Quantity</div>
+                                        <input type="text" value="{{ item.quantity }}" class="col-md-2">
+                                    </div>
+                                    <br />
+                                    <a href="{% url 'store:home' %}" class="btn btn-secondary">홈으로</a>
+                                    {% comment %} <button type="button" value="{{product.id}}" id="add-cart" class="btn btn-secondary">Add to Cart</button> {% endcomment %}
+                                    <button type="button"
+                                            data-index="{{ item.product.id }}"
+                                            class="btn btn-secondary update-cart">업데이트</button>
+                                    <button type="button"
+                                            data-index="{{ item.product.id }}"
+                                            class="btn btn-danger delete-product">삭제</button>
+                                </center>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            {% endfor %}
+        {% else %}
+            <h1>장바구니에 물품이 없습니다</h1>
+        {% endif %}
+    </div>
+{% endblock content %}
+{% block footer %}
+    {% include "layout/footer.html" %}
+{% endblock footer %}
