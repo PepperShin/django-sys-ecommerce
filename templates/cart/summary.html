@@ -39,19 +39,19 @@
                                         <p class="card-text">{{ item.product.description }}</p>
                                         {% if item.product.is_sale %}
                                             {% comment %} <div class="d-flex justify-content-center small text-warning mb-2">
-                          <div class="bi-star-fill"></div>
-                          <div class="bi-star-fill"></div>
-                          <div class="bi-star-fill"></div>
-                          <div class="bi-star-fill"></div>
-                          <div class="bi-star-fill"></div>
-                        </div>
-                        <!-- Product price-->
-                        <strike>
-                          ${{ product.price }}
-                        </strike>
-                        <br />
-                        ID :&nbsp;{{ product.id }}
-                        <br />
+                                            <div class="bi-star-fill"></div>
+                                            <div class="bi-star-fill"></div>
+                                            <div class="bi-star-fill"></div>
+                                            <div class="bi-star-fill"></div>
+                                            <div class="bi-star-fill"></div>
+                                            </div>
+                                            <!-- Product price-->
+                                            <strike>
+                                            ${{ product.price }}
+                                            </strike>
+                                            <br />
+                                            ID :&nbsp;{{ product.id }}
+                                            <br />
                                             &nbsp;${{ product.sale_price }} {% endcomment %}
                                             ${{ item.product.price }}
                                             <br />
@@ -67,14 +67,15 @@
                                         <br />
                                         <div class="row justify-content-center">
                                             <div class="col-md-2">Quantity</div>
-                                            <input type="text" value="{{ item.quantity }}" class="col-md-2">
+                                            <!-- dev_20 -->
+                                            <input type="text" id="input-{{item.product.id}}" value="{{ item.quantity }}" class="col-md-2">
                                         </div>
                                         <br />
                                         <a href="{% url 'store:home' %}" class="btn btn-secondary">홈으로</a>
                                         {% comment %} <button type="button"
-         value="{{product.id}}"
-         id="add-cart"
-         class="btn btn-secondary">Add to Cart</button> {% endcomment %}
+                                        value="{{product.id}}"
+                                        id="add-cart"
+                                        class="btn btn-secondary">Add to Cart</button> {% endcomment %}
                                         <button type="button"
                                                 data-index="{{ item.product.id }}"
                                                 class="btn btn-secondary update-cart">업데이트</button>
@@ -95,9 +96,9 @@
     {% block footer %}
         {% include "layout/footer.html" %}
     </div>
-    {% endblock footer %}
-    {% block script %}
-        <script>
+{% endblock footer %}
+{% block script %}
+    <script>
     $(document).on('click','.delete-product',function(e){
         $.ajax({
             type:"post",
@@ -116,5 +117,28 @@
             }
         });
     });
-        </script>
-    {% endblock script %}
+    // dev_20
+    $(document).on('click','.update-cart',function(e){
+        let productid = $(this).data("index")
+        let qty = $("#input-" + productid).val()
+
+        $.ajax({
+            type:"post",
+            url:"{% url 'cart:update_cart' %}",
+            data:{
+                product_id: $(this).data("index"),
+                product_qty: qty,
+                csrfmiddlewaretoken:'{{ csrf_token }}', // 장고에서만 사용된다.
+                action:"update"
+            },
+            success:function(json){
+                console.log(json)
+                location.reload();
+            },
+            error: function(e){
+                console.log(e)
+            }
+        });
+    });
+    </script>
+{% endblock script %}

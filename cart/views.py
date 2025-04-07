@@ -61,3 +61,18 @@ def delete_cart(request):
         cart.remove(product)
 
         return JsonResponse({"삭제_상품": product_id})
+
+
+# dev_20
+def update_cart(request):
+    cart = Cart(request)
+
+    if request.POST.get("action") == "update":
+        product_id = int(request.POST.get("product_id"))
+        product_qty = int(request.POST.get("product_qty"))
+
+        product = Product.objects.get(id=product_id)
+
+        cart.add(product, product_qty, True)
+
+        return JsonResponse({"상품 업데이트": product_id})
