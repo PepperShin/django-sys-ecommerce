@@ -32,6 +32,12 @@ class Cart:  # 카트 클래스 생성
         return sum(item["quantity"] for item in self.cart.values())
         # values = {"quantity" : 0, "price":str(product.price)}
 
+    # dev_21
+    def get_product_total(self):
+        return sum(
+            item["quantity"] * Decimal(item["price"]) for item in self.cart.values()
+        )
+
     # dev_18 Cart를 for문으로 돌릴 수 있는 이터레이터 객체로 생성
     def __iter__(self):
         product_ids = self.cart.keys()  # cart 딕셔너리에서 key인 1, 2...
@@ -62,7 +68,14 @@ class Cart:  # 카트 클래스 생성
         product_id = str(product.id)
 
         if product_id not in self.cart:
-            self.cart[product_id] = {"quantity": 0, "price": str(product.price)}
+            # dev_21
+            if product.is_sale:
+                self.cart[product_id] = {
+                    "quantity": 0,
+                    "price": str(product.sale_price),
+                }
+            else:
+                self.cart[product_id] = {"quantity": 0, "price": str(product.price)}
             # cart = {product_id : {"quantity" : 0, "price":str(product.price)}}
 
         # self.cart = {

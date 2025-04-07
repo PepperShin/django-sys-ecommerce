@@ -37,26 +37,23 @@
                                     <center>
                                         <h5 class="card-title">{{ item.product.name }}</h5>
                                         <p class="card-text">{{ item.product.description }}</p>
+                                        <!-- dev_21 -->
                                         {% if item.product.is_sale %}
-                                            {% comment %} <div class="d-flex justify-content-center small text-warning mb-2">
-                                            <div class="bi-star-fill"></div>
-                                            <div class="bi-star-fill"></div>
-                                            <div class="bi-star-fill"></div>
-                                            <div class="bi-star-fill"></div>
-                                            <div class="bi-star-fill"></div>
+                                            <div class="d-flex justify-content-center small text-warning mb-2">
+                                                <div class="bi-star-fill"></div>
+                                                <div class="bi-star-fill"></div>
+                                                <div class="bi-star-fill"></div>
+                                                <div class="bi-star-fill"></div>
+                                                <div class="bi-star-fill"></div>
                                             </div>
                                             <!-- Product price-->
                                             <strike>
-                                            ${{ product.price }}
+                                                <del>${{ item.product.price }}</del>
                                             </strike>
                                             <br />
-                                            ID :&nbsp;{{ product.id }}
+                                            ID :&nbsp;{{ item.product.id }}
                                             <br />
-                                            &nbsp;${{ product.sale_price }} {% endcomment %}
-                                            ${{ item.product.price }}
-                                            <br />
-                                            ID :
-                                            {{ item.product.id }}
+                                            &nbsp;${{ item.product.sale_price }}
                                         {% else %}
                                             ${{ item.product.price }}
                                             <br />
@@ -68,14 +65,17 @@
                                         <div class="row justify-content-center">
                                             <div class="col-md-2">Quantity</div>
                                             <!-- dev_20 -->
-                                            <input type="text" id="input-{{item.product.id}}" value="{{ item.quantity }}" class="col-md-2">
+                                            <input type="text"
+                                                   id="input-{{ item.product.id }}"
+                                                   value="{{ item.quantity }}"
+                                                   class="col-md-2">
                                         </div>
                                         <br />
                                         <a href="{% url 'store:home' %}" class="btn btn-secondary">홈으로</a>
                                         {% comment %} <button type="button"
-                                        value="{{product.id}}"
-                                        id="add-cart"
-                                        class="btn btn-secondary">Add to Cart</button> {% endcomment %}
+         value="{{product.id}}"
+         id="add-cart"
+         class="btn btn-secondary">Add to Cart</button> {% endcomment %}
                                         <button type="button"
                                                 data-index="{{ item.product.id }}"
                                                 class="btn btn-secondary update-cart">업데이트</button>
@@ -88,6 +88,8 @@
                         </div>
                     </div>
                 {% endfor %}
+                <!-- dev_21 -->
+                <h3 class="text-center">Total:{{ totals|floatformat:"0"|default_if_none:"0" }}</h3>
             {% else %}
                 <h1>장바구니에 물품이 없습니다</h1>
             {% endif %}
