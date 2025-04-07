@@ -82,6 +82,14 @@ class Cart:  # 카트 클래스 생성
         # self.session이랑 self.cart랑 주소가 같으나 혹시나 새로 만들어진 카트에서 주소 오류가 날 수 있어서 다시 할당하는걸 권장
         self.session.modified = True  # DB 갱신
 
+    # dev_19
+    def remove(self, product):
+        product_id = str(product.id)
+
+        if product_id in self.cart:
+            del self.cart[product_id]
+            self.save()
+
     def decrypt_all_sessions(self):
         """현재 DB에 저장된 모든 세션을 복호화하여 출력"""
         sessions = Session.objects.all()  # DB에서 모든 세션 조회

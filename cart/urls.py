@@ -10,4 +10,5 @@ app_name = "cart"
 urlpatterns = [
     path("add/", views.add_cart, name="add_cart"),
     path("", views.summary_cart, name="summary_cart"),  # dev_18
+    path("delete/", views.delete_cart, name="delete_cart"),  # dev_19
 ]
