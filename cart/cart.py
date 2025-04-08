@@ -97,8 +97,9 @@ class Cart:  # 카트 클래스 생성
 
         self.save()
 
-        # dev_23
-        if self.request.user.is_authenticated:
+    # dev_23
+    def cart_to_db(self):
+        if self.request.user.is_authenticated:  # 로그인이 되어있는 유저라면
             current_user = User.objects.filter(id=self.request.user.id)
 
             # Convert { '3':1 } to { "3":1 } -> Json은 기본적으로 쌍따옴표
@@ -112,6 +113,9 @@ class Cart:  # 카트 클래스 생성
         self.session[settings.CART_SESSION_ID] = self.cart
         # self.session이랑 self.cart랑 주소가 같으나 혹시나 새로 만들어진 카트에서 주소 오류가 날 수 있어서 다시 할당하는걸 권장
         self.session.modified = True  # DB 갱신
+
+        # dev_23
+        self.cart_to_db()
 
     # dev_19
     def remove(self, product):

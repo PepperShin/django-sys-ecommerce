@@ -34,11 +34,13 @@ def login_user(request):
             current_user = User.objects.get(id=request.user.id)
             saved_cart = current_user.old_cart
 
+            cart = Cart(request)
+
+            if len(cart) > 0:
+                cart.cart_to_db()
+
             if saved_cart:
                 converted_cart = json.loads(saved_cart)
-
-                # add
-                cart = Cart(request)
 
                 # {"1": {"quantity": 5, "price": "10000"}}
                 # loop
