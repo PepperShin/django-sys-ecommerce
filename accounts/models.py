@@ -31,3 +31,6 @@ class User(AbstractUser):
 
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
+
+    # dev_23
+    old_cart = models.CharField(max_length=1000, blank=True, null=True)

@@ -6,6 +6,9 @@ from django.contrib.sessions.models import Session
 from store.models import Product
 from decimal import Decimal
 
+# dev_23
+from accounts.models import User
+
 
 # dev_15
 class Cart:  # 카트 클래스 생성
@@ -14,6 +17,10 @@ class Cart:  # 카트 클래스 생성
     def __init__(self, request):  # 객체 생성시 request 객체를 받도록 함
 
         self.session = request.session  # session 객체를 Cart 객체에 변수로 저장
+
+        # dev_23
+        # 로그인이 되어 있다면, 로그인 유저에 대한 정보를 빼내기 위하여...
+        self.request = request
 
         cart = self.session.get(
             settings.CART_SESSION_ID
@@ -89,6 +96,17 @@ class Cart:  # 카트 클래스 생성
             self.cart[product_id]["quantity"] += quantity
 
         self.save()
+
+        # dev_23
+        if self.request.user.is_authenticated:
+            current_user = User.objects.filter(id=self.request.user.id)
+
+            # Convert { '3':1 } to { "3":1 } -> Json은 기본적으로 쌍따옴표
+            carty = str(self.cart)
+            carty = carty.replace("'", '"')
+            current_user.update(
+                old_cart=str(carty)
+            )  # ord_cart 에 장바구니 형태로 str 저장
 
     def save(self):
         self.session[settings.CART_SESSION_ID] = self.cart
