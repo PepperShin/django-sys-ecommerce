@@ -91,10 +91,14 @@
                 <!-- dev_21 -->
                 <h3 class="text-center">Total:{{ totals|floatformat:"0"|default_if_none:"0" }}</h3>
                 <!-- dev_24 -->
-                <form method="post" action="{% url 'orders:create_orders' %}">
+                {% comment %} <form method="post" action="{% url 'orders:create_orders' %}">
                     {% csrf_token %}
                     <button type="submit" class="btn btn-success text-center">주문</button>
-                </form>
+                </form> {% endcomment %}
+                <!-- dev_25 -->
+                <a href="{% url 'orders:create_orders' %}">
+                    <button type="button" class="btn btn-success text-center">주문</button>
+                </a>
             {% else %}
                 <h1>장바구니에 물품이 없습니다</h1>
             {% endif %}

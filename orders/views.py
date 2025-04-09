@@ -4,7 +4,13 @@ from cart.cart import Cart
 from store.models import Product
 from .models import Order, OrderItem
 
+# dev_25
+from django.contrib.auth.decorators import login_required
 
+
+# dev_25
+@login_required(login_url="accounts:login_user")
+# dev_24
 def create_orders(request):
     if request.POST:
         cart = Cart(request)
@@ -43,5 +49,6 @@ def create_orders(request):
             messages.success(request, "주문을 위해선 로그인을 하셔야 합니다.")
             return redirect("/")
     else:
-        messages.success(request, "잘못된 접근입니다.")
-        return redirect("/")
+        # dev_25
+        # messages.success(request, "잘못된 접근입니다.")
+        return render(request, "orders/create.html")
