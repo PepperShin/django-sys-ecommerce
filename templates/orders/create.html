@@ -2,7 +2,7 @@
 {% extends "layout/base.html" %}
 {% load humanize %}
 {% block head %}
-    {% include "layout/head.html" %}
+    {% include "orders/head.html" %}
 {% endblock head %}
 {% block navi %}
     {% include "layout/navbar.html" %}
@@ -298,10 +298,17 @@
                                 </div>
                             </div>
                             <div class="row g-4 text-center align-items-center justify-content-center pt-4">
-                                <input type="submit"
+                                <!-- dev_26 -->
+                                {% comment %} <input type="submit"
                                        class="btn border-secondary py-3 px-4 text-uppercase w-100 text-primary"
                                        value="Place Order">
-                            </input>
+                            </input> {% endcomment %}
+                            <button type="button"
+                                        id="cardPay"
+                                        data-pg="html5_inicis.INIpayTest"
+                                        data-pay="card"
+                                        class="btn border-secondary py-3 px-4 text-uppercase w-100 text-primary request-pay"
+                                        value="Place Order">Place Order</button>
                         </div>
                     </div>
                 </div>
@@ -313,3 +320,70 @@
     {% include "layout/footer.html" %}
 </div>
 {% endblock footer %}
+{% block script %}
+    <script>
+        $(document).on('click', '.request-pay', function(e){
+            let pg = $(this).data('pg') // 버튼의 data-pg
+            let payMethod = $(this).data('pay') // 버튼의 data-pay
+            let priceTotals = {{ cart.get_product_total }} // cart에 있는 함수 호출
+
+            let impCode = 'imp53308706' // iamport에서 제공하는 상점번호
+
+            IMP.init(impCode); // 고객사 식별코드를 통해 결제 모듈 초기화
+
+            IMP.request_pay( // axios로 작동
+            {
+                pg: pg,
+                pay_method: payMethod,
+                // merchant_uid: `payment-${crypto.randomUUID()}`, // 주문번호 생성(생략시 포트원에서 자동생성)
+                name: "장바구니 주문", // 결제창에 노출될 상품명
+                amount: 100, // 결제 금액
+                buyer_email: '{{user.email}}', // 로그인된 유저만 접근할 수 있는 페이지 이므로 request.user객체를 바로 쓸 수 있다.
+                buyer_name: '{{user.username}}',
+                buyer_tel: "010-4242-4242",
+                buyer_addr: "서울특별시 강남구 신사동",
+                buyer_postcode: "01181",
+            },
+            function (response) {
+                // 결제 종료 시 호출되는 콜백 함수
+                // response.imp_uid 값으로 결제 단건조회 API를 호출하여 결제 결과를 확인하고,
+                // 결제 결과를 처리하는 로직을 작성합니다.
+                // 결제 성공시의 로직
+                if(response.success){
+                    console.log(response)
+                    // alert("결제성공")
+                    // 결제 성공 시 로직
+                    // 1. 주문 정보 저장을 위해 ajax 요청
+                    // 2. 서버에서 결제 금액과 주문금액(세션에 저장되어있는)이 일치 하는지 확인
+                    // 3. 일치하면 주문 정보 및 결제정보 저장
+                    $.ajax({
+                        type: 'POST',
+                        url: '{% url 'payment:payment_process' %}',
+                        data:{ // 우리쪽 서버에 넘길 데이터
+                            imp_uid : response.imp_uid,
+                            paid_amount : response.paid_amount,
+                            csrfmiddlewaretoken: '{{csrf_token}}',
+                            action: 'post'
+                        },
+                        success: function(response){
+                            console.log(response)
+                            if(response == "SUCCESS"){
+                                alert("결제가 완료되었습니다");
+                                location.href = "/"; // 자바스크립트에서의 redirect
+                            }else{
+                                alert('결제에 실패하였습니다');
+                                location.reload() // 원래는 실패하면 환불처리 되어야한다.
+                            }
+                        },
+                        error: function(e){
+                            alert("결제에 실패하였습니다");
+                            console.log(e);
+                        }
+                    })
+                }else{
+                    alert("결제실패")
+                }
+            });
+        })
+    </script>
+{% endblock script %}
