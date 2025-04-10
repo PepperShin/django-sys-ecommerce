@@ -29,8 +29,12 @@ class OrderItem(models.Model):
 
 
 # dev_25
+# 일반적인 상거래 에서는 주문과 배송지는 1:1 관계이나
+# 배송지 변경을 위한 히스토리를 남기기 위해 1:N으로 하는 케이스도 있음
 class ShippingAddress(models.Model):
     user = models.ForeignKey("accounts.User", on_delete=models.CASCADE)
+    # dev_26_2
+    order = models.OneToOneField(Order, on_delete=models.CASCADE)
     full_name = models.CharField(max_length=125)
     phone = models.CharField(max_length=255)
     email = models.CharField(max_length=255)

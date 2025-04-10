@@ -13,7 +13,7 @@
         <header class="bg-dark py-5">
             <div class="container px-4 px-lg-5 my-5">
                 <div class="text-center text-white">
-                    <h1 class="display-4 fw-bolder">주문페이지</h1>
+                    <h1 class="display-4 fw-bolder">주문페이지(CheckOut Page)</h1>
                     <p class="lead fw-normal text-white-50 mb-0">주문을 해주세요. !!~~</p>
                 </div>
             </div>
@@ -24,7 +24,8 @@
             <div class="container py-5">
                 <h1 class="mb-4">Billing details</h1>
                 <!--dev_24-->
-                <form method="post">
+                <!-- dev_26_2 -->
+                <form id="payment-form" method="post" action="{% url 'payment:payment_process' %}">
                     {% csrf_token %}
                     {% include "layout/form_errors.html" %}
                     <div class="row g-5">
@@ -308,10 +309,20 @@
                                         data-pg="html5_inicis.INIpayTest"
                                         data-pay="card"
                                         class="btn border-secondary py-3 px-4 text-uppercase w-100 text-primary request-pay"
-                                        value="Place Order">Place Order</button>
+                                        value="KG 이니시스">KG 이니시스</button>
+                            <!-- dev_26_2 카카오 페이 -->
+                            <button type="button"
+                                        id="kakaoPay"
+                                        data-pg="kakaopay"
+                                        data-pay="card"
+                                        class="btn border-secondary py-3 px-4 text-uppercase w-100 text-primary request-pay"
+                                        value="카카오페이">카카오페이</button>
                         </div>
                     </div>
                 </div>
+                <!-- dev_26_2 -->
+                <input type="hidden" name="imp_uid" id="imp_uid">
+                <input type="hidden" name="paid_amount" id="paid_amount">
             </form>
         </div>
     </div>
@@ -323,6 +334,8 @@
 {% block script %}
     <script>
         $(document).on('click', '.request-pay', function(e){
+            // dev_26_2
+            e.preventDefault(); // 기본 동작 막기 (페이지 이동 방지)
             let pg = $(this).data('pg') // 버튼의 data-pg
             let payMethod = $(this).data('pay') // 버튼의 data-pay
             let priceTotals = {{ cart.get_product_total }} // cart에 있는 함수 호출
@@ -351,35 +364,12 @@
                 // 결제 성공시의 로직
                 if(response.success){
                     console.log(response)
-                    // alert("결제성공")
-                    // 결제 성공 시 로직
-                    // 1. 주문 정보 저장을 위해 ajax 요청
-                    // 2. 서버에서 결제 금액과 주문금액(세션에 저장되어있는)이 일치 하는지 확인
-                    // 3. 일치하면 주문 정보 및 결제정보 저장
-                    $.ajax({
-                        type: 'POST',
-                        url: '{% url 'payment:payment_process' %}',
-                        data:{ // 우리쪽 서버에 넘길 데이터
-                            imp_uid : response.imp_uid,
-                            paid_amount : response.paid_amount,
-                            csrfmiddlewaretoken: '{{csrf_token}}',
-                            action: 'post'
-                        },
-                        success: function(response){
-                            console.log(response)
-                            if(response == "SUCCESS"){
-                                alert("결제가 완료되었습니다");
-                                location.href = "/"; // 자바스크립트에서의 redirect
-                            }else{
-                                alert('결제에 실패하였습니다');
-                                location.reload() // 원래는 실패하면 환불처리 되어야한다.
-                            }
-                        },
-                        error: function(e){
-                            alert("결제에 실패하였습니다");
-                            console.log(e);
-                        }
-                    })
+                    //alert("결재성공")
+                    
+                    $("#imp_uid").val(response.imp_uid);
+                    $("#paid_amount").val(response.paid_amount);
+                    //폼전송 <form id="payment-form"
+                    $("#payment-form").submit()
                 }else{
                     alert("결제실패")
                 }
