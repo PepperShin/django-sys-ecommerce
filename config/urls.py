@@ -11,6 +11,7 @@ urlpatterns = [
     path("orders/", include("orders.urls")),  # dev_24
     path("payment/", include("payment.urls")),  # dev_25
     path("accounts/", include("allauth.urls")),  # dev_27 소셜 로그인
+    path("api/", include("api.urls")),  # dev_28
 ]
 
 # dev_2
