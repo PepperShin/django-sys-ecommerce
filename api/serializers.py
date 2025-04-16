@@ -24,15 +24,27 @@ from store.models import Category, Product
 #     sale_price = serializers.IntegerField()
 
 
+# dev_32
+class CategorySerializer(serializers.ModelSerializer):
+    # product = ProductSerializer(
+    #     many=True, read_only=True
+    # )  # 역방향 참조 category = models.ForeignKey(Category, on_delete=models.CASCADE, related_name="product")
+
+    class Meta:
+        model = Category
+        fields = "__all__"
+
+
+# dev_33
 class ProductSerializer(serializers.ModelSerializer):
-    # category = CategorySerializer(read_only=True)
+    category = CategorySerializer()  # read_only를 안하면 False가 기본
 
     class Meta:
         model = Product
         fields = "__all__"
         # fields = ["id", "name", "price"]
         # dev_32
-        depth = 1  # ForeignKey 필드 자동 직렬화
+        # depth = 1  # ForeignKey 필드 자동 직렬화
 
     # dev_31
     # 0 이상 10,000 이하만 들어가게 하겠다.
@@ -78,13 +90,12 @@ class ProductSerializer(serializers.ModelSerializer):
 
     #     return data
 
+    # dev_33
+    def create(self, validated_data):
+        category_data = validated_data.pop("category")
 
-# dev_32
-class CategorySerializer(serializers.ModelSerializer):
-    product = ProductSerializer(
-        many=True, read_only=True
-    )  # 역방향 참조 category = models.ForeignKey(Category, on_delete=models.CASCADE, related_name="product")
+        # 카테고리 저장 및 조회
+        category, _ = Category.objects.get_or_create(**category_data)
+        product = Product.objects.create(**validated_data, category=category)
 
-    class Meta:
-        model = Category
-        fields = "__all__"
+        return product
