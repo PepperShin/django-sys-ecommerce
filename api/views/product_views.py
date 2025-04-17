@@ -1,6 +1,6 @@
 from django.shortcuts import get_object_or_404
 from rest_framework.decorators import api_view
-from store.models import Product
+from store.models import Product, Category
 from api.serializers import ProductSerializer
 from rest_framework.response import Response
 from rest_framework import status
@@ -18,13 +18,35 @@ def products_api(request):
 
     # dev_30
     # 디시리얼라이져
-    if request.method == "POST":
-        print("데이터", request.data)  # json, dic
-        print("타입", type(request.data))  # dic
+    # if request.method == "POST":
+    #     print("데이터", request.data)  # json, dic
+    #     print("타입", type(request.data))  # dic
 
-        serializer = ProductSerializer(data=request.data)
+    #     serializer = ProductSerializer(data=request.data)
+    #     serializer.is_valid(raise_exception=True)
+    #     serializer.save()
+
+    #     return Response(serializer.data)
+
+    # dev_33_2 view에서 직접 처리하기
+    if request.method == "POST":
+
+        # request.data는 기본적으로 불변. category부분만 pop이 불가능
+        data = request.data.copy()
+
+        # 복사해서 pop 가능
+        category_data = data.pop("category")
+        # category_data = request.data["category"]
+
+        # get_or_create 는 dict 형식으로 받기 때문에 category_data는 리스트 일 수 있어서 확인
+        if isinstance(category_data, list):
+            category_data = category_data[0]
+
+        category, _ = Category.objects.get_or_create(**category_data)
+
+        serializer = ProductSerializer(data=data)
         serializer.is_valid(raise_exception=True)
-        serializer.save()
+        serializer.save(category=category)
 
         return Response(serializer.data)
 
@@ -45,6 +67,7 @@ def product_api(request, pk):
         serializer = ProductSerializer(product, data=request.data)
         serializer.is_valid(raise_exception=True)
         serializer.save()
+
         return Response(serializer.data)
 
     elif request.method == "DELETE":
