@@ -12,9 +12,26 @@ class Rectangle:
         self.area = width * height
 
 
+def add(num1, num2):
+    return num1 + num2
+
+
+def sub(num1, num2):
+    return num1 - num2
+
+
 class ObjectAPITest(TestCase):
     def setUp(self):
         pass
+
+    def test_path(self):
+        dict = {
+            "add": add,
+            "sub": sub,
+        }
+        url = "add"
+        print(dict[url](1, 2))
+        print(dict["sub"](2, 1))
 
     # 사각형 rect 객체를 직렬화 (Serialization)
     def test_serialization(self):

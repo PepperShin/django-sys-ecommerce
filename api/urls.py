@@ -24,5 +24,7 @@ urlpatterns = [
     path("products/", product_views.products_api),
     path("product/<int:pk>/", product_views.product_api),
     # dev_32
-    path("categories/", category_views.categories_api),
+    # path("categories/", category_views.categories_api),
+    # dev_35
+    path("categories/", category_views.CategoriesAPI.as_view()),
 ]
