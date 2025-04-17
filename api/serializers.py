@@ -92,10 +92,29 @@ class ProductSerializer(serializers.ModelSerializer):
 
     # dev_33
     def create(self, validated_data):
-        category_data = validated_data.pop("category")
+        category_data = validated_data.pop(
+            "category"
+        )  # pop을 해서 카테고리 부분을 떼어낸다.
 
         # 카테고리 저장 및 조회
-        category, _ = Category.objects.get_or_create(**category_data)
+        category, _ = Category.objects.get_or_create(
+            **category_data
+        )  # 카테고리 객체와 뒤에는 시간.
         product = Product.objects.create(**validated_data, category=category)
 
         return product
+
+        # {
+        #     "id": 1,
+        #     "name": "명품자바",
+        #     "price": "12000.00",
+        #     "description": "자바 책입니다.",
+        #     "image": "/media/upload/product/%EB%AA%85%ED%92%88%EC%9E%90%EB%B0%94_b9raYG9.jpg",
+        #     "is_sale": false,
+        #     "sale_price": 10000
+        # },
+
+        # "category": {
+        #     "id": 2,
+        #     "name": "자바"
+        # },
