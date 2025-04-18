@@ -61,3 +61,69 @@ class CategoryAPI(APIView):
         return Response(
             "삭제 성공", status=status.HTTP_204_NO_CONTENT
         )  # from rest_framework import status
+
+
+from rest_framework.mixins import ListModelMixin, CreateModelMixin
+from rest_framework.generics import GenericAPIView
+
+
+# dev_36
+# GenericAPIView: self.get_queryset()과 self.get_serializer()를 제공
+# ListModelMixin: self.list() 내부에서 위의 메서드들을 호출
+# 주의
+# 기본적으로는 queryset, serializer_classs는 약속된 이름
+# 대신 커스텀 마이징은 가능
+class CategoriesMixins(ListModelMixin, CreateModelMixin, GenericAPIView):
+    queryset = Category.objects.all()
+    serializer_class = CategorySerializer
+
+    def get(self, request, *args, **kwargs):
+        return self.list(request, *args, **kwargs)
+
+    def post(self, request, *args, **kwargs):
+        return self.create(request, *args, **kwargs)
+
+
+# 커스터마이징
+"""
+class CategoriesCustomMixins(ListModelMixin, CreateModelMixin, GenericAPIView):
+    categories = Category.objects.all()
+    category_serializer = CategorySimpleSerializer
+
+    # GenericAPIView의 get_queryset 함수를 오버라이드 해서 queryset 대신 categories를 리턴
+    def get_queryset(self): 
+        return self.categories
+    
+    # GenericAPIView의 get_serializer_class 함수를 오버라이드 해서 serializer_class 대신 category_serializer를 리턴
+    def get_serializer_class(self):
+        return self.category_serializer
+
+    def get(self, request, *args, **kwargs):
+        return self.list(request, *args, **kwargs)
+
+    def post(self, request, *args, **kwargs):
+        return self.create(request, *args, **kwargs)
+
+"""
+
+from rest_framework.mixins import (
+    RetrieveModelMixin,
+    UpdateModelMixin,
+    DestroyModelMixin,
+)
+
+
+class CategoryMixins(
+    RetrieveModelMixin, UpdateModelMixin, DestroyModelMixin, GenericAPIView
+):
+    queryset = Category.objects.all()
+    serializer_class = CategorySerializer
+
+    def get(self, request, *args, **kwargs):
+        return self.retrieve(request, *args, **kwargs)
+
+    def put(self, request, *args, **kwargs):
+        return self.update(self, request, *args, **kwargs)
+
+    def delete(self, request, *args, **kwargs):
+        return self.destroy(self, request, *args, **kwargs)
