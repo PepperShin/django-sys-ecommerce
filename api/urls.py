@@ -27,4 +27,5 @@ urlpatterns = [
     # path("categories/", category_views.categories_api),
     # dev_35
     path("categories/", category_views.CategoriesAPI.as_view()),
+    path("category/<int:pk>/", category_views.CategoryAPI.as_view()),
 ]
