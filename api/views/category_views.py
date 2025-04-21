@@ -119,6 +119,8 @@ class CategoryMixins(
     queryset = Category.objects.all()
     serializer_class = CategorySerializer
 
+    # lookup_field = "name"
+
     def get(self, request, *args, **kwargs):
         return self.retrieve(request, *args, **kwargs)
 
