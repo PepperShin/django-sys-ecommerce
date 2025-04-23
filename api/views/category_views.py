@@ -16,6 +16,11 @@ from rest_framework.generics import ListCreateAPIView, RetrieveUpdateDestroyAPIV
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.exceptions import ValidationError, PermissionDenied
 
+# dev_38
+from rest_framework.viewsets import ModelViewSet
+from rest_framework.decorators import action
+from rest_framework import filters
+
 
 # dev_32
 @api_view(["GET"])
@@ -222,3 +227,45 @@ class CategoryGeneric(RetrieveUpdateDestroyAPIView):
             {"message": "카테고리가 삭제되었습니다."},
             status=status.HTTP_204_NO_CONTENT,
         )
+
+
+# dev_38
+class CategoryViewSet(ModelViewSet):
+    queryset = Category.objects.all()
+    serializer_class = CategorySerializer
+
+    # 검색 필터
+    filter_backends = [filters.SearchFilter]
+    search_fields = ["name"]  # ?search=자바
+
+    # 정렬 필터
+    # /api/categories/?ordering=name
+    filter_backends = [filters.OrderingFilter]
+    search_fields = ["name"]
+
+    # http://127.0.0.1:8000/api/categories/1/products/ 라는 URL로 호출
+    # detail=True    /api/resource/<pk>/custom/    특정 객체에 대해 작동 (PK 필요)
+    # detail=False    /api/resource/custom/    전체 또는 리스트 대상 (PK 불필요)
+    @action(detail=True, methods=["get"])
+    def products(self, request, pk=None):
+        category = self.get_object()  # get_object_or_404(Category, id=pk)와 동일
+        products = category.product.all()
+        # category = models.ForeignKey(
+        #     Category, on_delete=models.CASCADE, related_name="product" 이 이름으로 설정
+        # )  # dev_32 역방향 참조를 위한 이름 지정
+        data = [
+            {"name": p.name, "price": p.price} for p in products
+        ]  # 리스트 컴프리헨션
+        return Response({"category": category.name, "products": data})
+
+    # GET /api/categories/?search=식품 = 쿼리스트링 방식
+    # GET /api/categories/{search}/ = restful 방식
+
+    # 검색 기능 추가(쿼리 파라미터: ?search=과일)
+    # def get_queryset(self):  # 제네릭 뷰의 get_queryset을 오버라이딩
+    #     queryset = Category.objects.all()
+    #     search = self.request.query_params.get("search")
+    #     if search:
+    #         queryset = queryset.filter(name__icontains=search)
+
+    #     return queryset
